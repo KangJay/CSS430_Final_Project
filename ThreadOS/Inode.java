@@ -46,6 +46,11 @@ public class Inode
     public Inode(short iNumber){
         // 16 iNodes per block so we need to find the block number. 
         int blockNum = (iNumber / iNodePerBlock) + 1; //0th is superblock.
-        int offset =  
+        byte[] data = new byte[Disk.blockSize]; // blockSize = 512 bytes. 
+        SysLib.rawread(blockNum, data); 
+        // Get the iNode's bytes within a block's offset. 
+        // the i-th iNode within a block * 32 bytes = starting 32-byte index of this iNode/ 
+        int offset =  (iNumber % iNodePerBlock) * iNodeSize; 
+        
     }
 }
