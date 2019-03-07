@@ -6,6 +6,7 @@ public class Superblock
 {
     private final int defaultInodeBlocks = 64;
     //Locations within the super block that shows the details of the disk
+    //Offset in multiples of 4 --> 4 bytes in a int
     private final int totalBlocksLoc = 0;
     private final int totalInodeLoc = 4;
     private final int freeListLoc = 8;
@@ -38,6 +39,7 @@ public class Superblock
         }
     }
 
+    //Need to figure this one out.
     public void format(int diskSize)
     {
 
@@ -49,11 +51,9 @@ public class Superblock
         necessary data to byte format within a temporary byte array, which then gets written to disk*/
         
         byte[] tempSuperBlock = new byte[Disk.blockSize] //should be 512 (required size for rawread/rawwrite)
-        /*
-        totalBlocks = SysLib.bytes2int(superblock, totalBlocksLoc);
-        totalInodes = SysLib.bytes2int(superBlock, totalInodeLoc);
-        freeList = SysLib.bytes2int(superBlock, freeListLoc);
-        */
+        /* 	totalBlocks = SysLib.bytes2int(superblock, totalBlocksLoc);
+        	totalInodes = SysLib.bytes2int(superBlock, totalInodeLoc);
+        	freeList = SysLib.bytes2int(superBlock, freeListLoc); 		*/
         
         //public static void int2bytes( int i, byte[] b, int offset )
         SysLib.int2bytes(totalBlocks, tempSuperBlock, totalBlocksLoc);
