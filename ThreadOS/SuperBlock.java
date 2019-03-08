@@ -40,8 +40,13 @@ public class Superblock
     }
 
     //Need to figure this one out.
-    public void format(int diskSize)
+    public void format(int numInodes)
     {
+    	//New format
+    	byte[] newSuperBlock = new byte[Disk.blockSize];
+    	SysLib.int2bytes(1000, newSuperBlock, totalBlocksLoc);
+    	SysLib.int2bytes(numInodes, newSuperblock, totalInodeLoc);
+    	//Find the first free block then call int2bytes into the buffer with freeListLoc
 
     }
 
