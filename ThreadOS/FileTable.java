@@ -19,6 +19,15 @@ public class FileTable {  // Each table entry should have
         // Allocate a new file (structure) table entry for this file name 
         short accessMode = getMode(mode); 
 
+        /*
+        NOTE FOR FUTURE DEVELOPMENT: Get/create the associated inode. If the inode 
+        existed prior to the falloc call, it means it may be in use (written to/read from)
+        so check inode.flag == USED/UNUSED and WIRTE/READ to see if it's safe to allow another
+        process to access this FileTableEntry. If it's in read only, it's safe. If it's being 
+        written to, call wait() on the call. --> Call notify() when a writing process is done writing. 
+        
+        */
+
         // Allocate/retrieve and register the corresponding inode using dir
         // Increment this inodes' count
         // Immediately write back this inode to the disk

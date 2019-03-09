@@ -47,10 +47,29 @@ public class Inode
         // 16 iNodes per block so we need to find the block number. 
         int blockNum = (iNumber / iNodePerBlock) + 1; //0th is superblock.
         byte[] data = new byte[Disk.blockSize]; // blockSize = 512 bytes. 
-        SysLib.rawread(blockNum, data); 
+        SysLib.rawread(blockNum, data); //Read in the given block the inode is in
         // Get the iNode's bytes within a block's offset. 
         // the i-th iNode within a block * 32 bytes = starting 32-byte index of this iNode/ 
         int offset =  (iNumber % iNodePerBlock) * iNodeSize; 
-        
+        //Need to get the space representing the inode's length, count, and flag (4 : 2 : 2 bytes)
+        length = SysLib.bytes2int(data, offset); 
+        offset += 4; //Move 4 bytes since an int is 4 bytes 
+        count = SysLib.bytes2short(data, offset); 
+        offset += 2; //count is a short so 2 bytes 
+        flag = SysLib.bytes2short(data, offset); 
+        offset +=2; //Got all the instance variable's data set for this given inode. 
+
+        //Need to get all the direct data block pointers (2 bytes each because they're shorts)
+        for (int i = 0; i < directSize; i++){
+            direct[i] = SysLib.bytes2short(data, offset);
+            offset += 2;
+        }
+        indirect = SysLib.bytes2short(data, offset); //Done reading in this inode's data from disk. 
+    }
+
+    public int toDisk(short iNumber){
+        //Do the reverse of the iNode(short iNumber) constructor
+        return -1; 
+
     }
 }

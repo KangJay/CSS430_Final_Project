@@ -4,7 +4,7 @@
 
 public class Superblock
 {
-    private final int defaultInodeBlocks = 64;
+    private final int DEFAULT_INODE_BLOCKS = 64;
     //Locations within the super block that shows the details of the disk
     //Offset in multiples of 4 --> 4 bytes in a int
     private final int totalBlocksLoc = 0;
@@ -35,7 +35,7 @@ public class Superblock
         {
             // Need to format/re-format the disk
             totalBlocks = diskSize;
-            format(defaultInodeBlocks); //Implement format
+            format(DEFAULT_INODE_BLOCKS); //Implement format
         }
     }
 
@@ -44,7 +44,7 @@ public class Superblock
     {
     	//New format
     	byte[] newSuperBlock = new byte[Disk.blockSize];
-    	SysLib.int2bytes(1000, newSuperBlock, totalBlocksLoc);
+    	SysLib.int2bytes(totalBlocks, newSuperBlock, totalBlocksLoc);
     	SysLib.int2bytes(numInodes, newSuperblock, totalInodeLoc);
     	//Find the first free block then call int2bytes into the buffer with freeListLoc
 
