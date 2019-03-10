@@ -55,7 +55,7 @@ public class Superblock
         /* In order to sync the contents of the superblock to disk, it is necessary to convert all
         necessary data to byte format within a temporary byte array, which then gets written to disk*/
         
-        byte[] tempSuperBlock = new byte[Disk.blockSize] //should be 512 (required size for rawread/rawwrite)
+        byte[] tempSuperBlock = new byte[Disk.blockSize]; //should be 512 (required size for rawread/rawwrite)
         /* 	totalBlocks = SysLib.bytes2int(superblock, totalBlocksLoc);
         	totalInodes = SysLib.bytes2int(superBlock, totalInodeLoc);
         	freeList = SysLib.bytes2int(superBlock, freeListLoc); 		*/
@@ -66,6 +66,6 @@ public class Superblock
         SysLib.int2bytes(freeList, tempSuperBlock, freeListLoc);
         //tempSuperBlock has the updated contents of the current file system's state.
         SysLib.rawwrite(0, tempSuperBlock); //0th block is the super block.
-        SysLib.cout("Superblock synchronized\n")
+        SysLib.cout("Superblock synchronized\n");
     }
 }
