@@ -94,7 +94,6 @@ public class Kernel
 		// get the current thread's parent id
 		// search waitQueue for and wakes up the thread under the
 		// condition = the current thread's parent id
-		// tell the Scheduler to delete the current thread (since it is exiting)
 		return OK;
 	    case SLEEP:   // sleep a given period of milliseconds
 		scheduler.sleepThread( param ); // param = milliseconds

@@ -66,5 +66,6 @@ public class Superblock
         SysLib.int2bytes(freeList, tempSuperBlock, freeListLoc);
         //tempSuperBlock has the updated contents of the current file system's state.
         SysLib.rawwrite(0, tempSuperBlock); //0th block is the super block.
+        SysLib.cout("Superblock synchronized\n")
     }
 }

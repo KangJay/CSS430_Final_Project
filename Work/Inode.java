@@ -18,8 +18,12 @@ public class Inode
     private final static int iNodeSize = 32;     // Default size is 32 bytes
     private final static int directSize = 11;    // # of direct pointers
     private final static int iNodePerBlock = 16; // 16 inodes per block
-    private final static int shortSize = 2;      // 2 bytes in a short 
-    private final static int intSize = 4;        // 4 bytes in a int
+
+    private final static int UNUSED = 0;
+    private final static int USED = 1; 
+    private final static int READ = 2; 
+    private final static int WRITE = 3; 
+    private final static int DELETE = 4;
 
     public int length;      // file size in bytes
     public short count;     // # of file-table entries that opened this file = open count
@@ -49,7 +53,7 @@ public class Inode
         byte[] data = new byte[Disk.blockSize]; // blockSize = 512 bytes. 
         SysLib.rawread(blockNum, data); //Read in the given block the inode is in
         // Get the iNode's bytes within a block's offset. 
-        // the i-th iNode within a block * 32 bytes = starting 32-byte index of this iNode/ 
+        // the i-th iNode within a block * 32 bytes = starting 32-byte index of this iNode 
         int offset =  (iNumber % iNodePerBlock) * iNodeSize; 
         //Need to get the space representing the inode's length, count, and flag (4 : 2 : 2 bytes)
         length = SysLib.bytes2int(data, offset); 
@@ -67,9 +71,45 @@ public class Inode
         indirect = SysLib.bytes2short(data, offset); //Done reading in this inode's data from disk. 
     }
 
-    public int toDisk(short iNumber){
-        //Do the reverse of the iNode(short iNumber) constructor
-        return -1; 
+    /**
+	
+    */
+    public void toDisk(short iNumber){
+   		byte data[] = new byte[Disk.blockSize];
+   		int blockNum = (iNumber / iNodePerBlock) + 1;
+   		SysLib.rawread(blockNum, data);
+   		// Get the iNode's bytes within a block's offset. 
+        // the i-th iNode within a block * 32 bytes = starting 32-byte index of this iNode 
+        int offset = (iNumber % 16) * 32;
+        //Need to get the space representing the inode's length, count, and flag (4 : 2 : 2 bytes)
+        SysLib.int2bytes(length, data, offset); 
+        offset += 4; //Move 4 bytes since an int is 4 bytes 
+        SysLib.short2bytes(count, data, offset); 
+        offset += 2; //count is a short so 2 bytes 
+        SysLib.short2bytes(flag, data, offset); 
+        offset +=2; //Got all the instance variable's data set for this given inode. 
 
+        for (int i = 0; i < directSize; i++){
+        	SysLib.short2bytes(direct[i], data, offset);
+        	offset += 2; 
+        }
+        SysLib.short2bytes(indirect, data, offset);
+        SysLib.rawwrite(blockNum, data);
+    }
+
+    //Exception in thread "main" java.lang.NoSuchMethodError: Inode.findTargetBlock(I)
+    public int findTargetBlock(int numBytes) {
+        int blockNum = numBytes / Disk.blockSize;
+        if (blockNum < directSize) { //11 direct pointers 0 to 10 
+            return direct[blockNum];
+        }
+        if (indirect < 0) { //Indirect not set up
+            return -1;
+        }
+        // else Indirect pointer has information to retrieve
+        byte[] indirectIndexBlock = new byte[Disk.blockSize];
+        SysLib.rawread(indirect, indirectIndexBlock);
+        int indexBlockLoc = blockNum - directSize;
+        return SysLib.bytes2short(indirectIndexBlock, indexBlockLoc * 2);
     }
 }
