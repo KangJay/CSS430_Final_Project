@@ -112,4 +112,70 @@ public class Inode
         int indexBlockLoc = blockNum - directSize;
         return SysLib.bytes2short(indirectIndexBlock, indexBlockLoc * 2);
     }
+    //Exception in thread "Thread-5" java.lang.NoSuchMethodError: Inode.registerTargetBlock(IS)I
+    public int registerTargetBlock(int offset, short indexBlockNum){
+        if (offset < 0){
+            SysLib.cerr("Invalid block number\n");
+            return -1;
+        }
+        int block = offset / Disk.blockSize; 
+        if (block < 11){
+            if (direct[block] >= 0){
+                return -1;
+            }
+            if (block > 0 && direct[block - 1] == -1){
+                return -2; 
+            }
+            direct[block] = indexBlockNum;
+            return 0;
+        }
+        if (indirect < 0){ //Not in either direct or indirect pointers
+            return -3; 
+        }
+        byte[] data = new byte[Disk.blockSize]; 
+        SysLib.rawread(indirect, data);
+
+        int targetBlock = block - directSize; 
+        //Test targetBlock range?
+        if (SysLib.bytes2short(data, targetBlock * 2) > 0){
+            return -1;
+        }
+        SysLib.short2bytes(indexBlockNum, data, targetBlock * 2); 
+        SysLib.rawwrite(indirect, data); 
+        return 0; 
+    }
+
+    public int findIndexBlock(){
+        return indirect;
+    }
+    //Exception in thread "Thread-5" java.lang.NoSuchMethodError: Inode.registerIndexBlock(S)Z
+    public boolean registerIndexBlock(short indexBlockNum){
+        if (indirect != -1){ //Index block already in use
+            return false; 
+        }
+        //all direct blocks have to be used first before index
+        for (int i = 0; i < directSize; i++){ 
+            if (direct[i] < 0){ 
+                return false; 
+            }
+        }
+        indirect = indexBlockNum; //Can allocate the index block for use
+        byte[] data = new byte[Disk.blockSize];
+        for (int i = 0; i < Disk.blockSize / 2; i += 2){ //Short = 2 bytes, so increment by 2 bytes each time
+            SysLib.short2bytes((short) -1, data, i);
+        }
+        SysLib.rawwrite(indirect, data);
+        return true; 
+    }
+
+    //Exception in thread "Thread-5" java.lang.NoSuchMethodError: Inode.unregisterIndexBlock()[B
+    public byte[] unregisterIndexBlock(){
+        if (indirect >= 0){
+            byte[] data = new byte[Disk.blockSize]; 
+            SysLib.rawread(indirect, data);
+            indirect = -1; //Unregsiter
+            return data; 
+        }
+        return null;
+    }
 }

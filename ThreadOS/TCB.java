@@ -1,48 +1,43 @@
 public class TCB {
-		private Thread thread = null;
+    private Thread thread = null;
     private int tid = 0;
     private int pid = 0;
     private boolean terminated = false;
     private int sleepTime = 0;
-
-    //0, 1, 2 = Stdin, Stdout, Stderr
     public FileTableEntry[] ftEnt = null; // added for the file system
 
     public TCB( Thread newThread, int myTid, int parentTid ) {
-		thread = newThread;
-		tid = myTid;
-		pid = parentTid;
-		terminated = false;
+	thread = newThread;
+	tid = myTid;
+	pid = parentTid;
+	terminated = false;
 
-		ftEnt = new FileTableEntry[32];    // added for the file system
+	ftEnt = new FileTableEntry[32];    // added for the file system
 
-		System.err.println( "threadOS: a new thread (thread=" + thread + 
+	System.err.println( "threadOS: a new thread (thread=" + thread + 
 			    " tid=" + tid + 
 			    " pid=" + pid + ")");
-		//Mimics "per-process" open file table
-		ftEnt = new FileTableEntry[32]; //All entries initialized to null. 
-
     }
 
     public synchronized Thread getThread( ) {
-			return thread;
+	return thread;
     }
 
     public synchronized int getTid( ) {
-			return tid;
+	return tid;
     }
 
     public synchronized int getPid( ) {
-		return pid;
+	return pid;
     }
 
     public synchronized boolean setTerminated( ) {
-		terminated = true;
-		return terminated;
+	terminated = true;
+	return terminated;
     }
 
     public synchronized boolean getTerminated( ) {
-		return terminated;
+	return terminated;
     }
 
     // added for the file system

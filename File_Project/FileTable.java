@@ -40,15 +40,15 @@ public class FileTable {  // Each table entry should have
         			if (inode.flag == READ){
         				inode.flag = READ;
         				break;
-        			} else if (inode.flag == WRITE){
+        			} else if (inode.flag == UNUSED || inode.flag == USED){
+                        inode.flag = READ;
+                        break; 
+                    } else if (inode.flag == WRITE){
                         //File is currently being written to
                         try{ 
                             wait();
                         } catch (InterruptedException e) {}
-        			} else {
-                        inode.flag = READ;
-                        break; 
-                    }
+        			} 
                 } else if (mode.equals("w") || mode.equals("w+") || mode.equals("a")){
                     //Only one write/append can be done at any given time. 
                     if (inode.flag == WRITE || inode.flag == READ){
