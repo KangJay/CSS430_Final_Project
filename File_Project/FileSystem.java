@@ -26,7 +26,15 @@ class FileSystem{
     }
 
     public boolean format(int files){
-        return false; 
+        //What if there's files currently open?
+        if (!filetable.fempty()){
+            SysLib.cerr("Files currently open!\n");
+            return false; 
+        }
+        superblock.format(files);
+        directory = new Directory(superblock.inodeBlocks);
+        filetable = new FileTable(directory);  
+        return true; ; 
     }
 
     public FileTableEntry open(String filename, String mode){

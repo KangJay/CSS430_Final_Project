@@ -43,7 +43,7 @@ public class SuperBlock
         format(DEFAULT_INODE_BLOCKS);
     }
 
-    //Need to figure this one out.
+    //RETEST with default format later
     public void format(int numInodes) {
     	//New format
     	/*byte[] newSuperBlock = new byte[Disk.blockSize];
