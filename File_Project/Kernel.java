@@ -77,14 +77,17 @@ public class Kernel
                      // instantiate and start a disk
                      disk = new Disk( 1000 );
                      disk.start( );
-   
+                     
+                     // Instantiate a new file system : Prog 5
+                     fs = new FileSystem(1000);
+               
                      // instantiate a cache memory
                      cache = new Cache( disk.blockSize, 10 );
    
                      // instantiate synchronized queues
                      ioQueue = new SyncQueue( );
                      waitQueue = new SyncQueue( scheduler.getMaxThreads( ) );
-                     fs = new FileSystem(1000);
+                     
                      return OK;
                   case EXEC:
                      return sysExec( ( String[] )args );

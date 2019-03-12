@@ -1,4 +1,3 @@
-
 class FileSystem{
 
     private SuperBlock superblock;
@@ -146,11 +145,16 @@ class FileSystem{
                             break;  // Signals correct linking
                         case Inode.BLOCK_ERROR:
                         case Inode.MISSING_ERROR:
-                            return -1;    
+                            return -1;  
+                        default: 
+                            ftEnt.inode.registerIndexBlock((short) superblock.getFreeBlock());
+                            ftEnt.inode.registerTargetBlock(ftEnt.seekPtr, (short) freeBlock);
+                            break; 
                     }
                     blockNum = freeBlock; 
                 }
                 byte[] data = new byte[Disk.blockSize]; 
+                //SysLib.rawread(blockNum, data);
                 if (ftEnt.mode.equals("w+") || ftEnt.mode.equals("a")){ //Keep current blocks, else wipe
                     SysLib.rawread(blockNum, data); 
                 }
@@ -214,6 +218,9 @@ class FileSystem{
 
     private boolean deallocAllBlocks(FileTableEntry ftEnt){
         //Reset all direct blocks
+        if (ftEnt.inode.count != 1){ //Open call should be the only one pointing to it
+            return false; 
+        }
         for (int i = 0; i < ftEnt.inode.direct.length; i++){
             //Direct pointers currently point to data blocks. Need to reset and append to freelist
             if (ftEnt.inode.direct[i] != -1){
