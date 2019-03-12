@@ -1,7 +1,3 @@
-/**
-
-*/
-
 
 /* Starting from the blocks after the superblock will be the inode blocks. Each inode describes one file. 
 Our inode is a simplified version of the UNIX inode. It includes 12 pointers of the index block. 
@@ -19,12 +15,11 @@ public class Inode
     private final static int directSize = 11;    // # of direct pointers
     private final static int iNodePerBlock = 16; // 16 inodes per block
 
-    private final static int UNUSED = 0;
-    private final static int USED = 1; 
-    private final static int READ = 2; 
-    private final static int WRITE = 3; 
-    private final static int DELETE = 4;
-
+    public final static int OK = 0;                 // Everything's good
+    public final static int BLOCK_ERROR = -1;       // Signals a simple index error
+    public final static int MISSING_ERROR = -2;     // Not found in Inode at all
+    public final static int REGISTER_ERROR = -3;    // Signals the call was invalid
+    
     public int length;      // file size in bytes
     public short count;     // # of file-table entries that opened this file = open count
     public short flag;      // 0 = unused, 1 = used
@@ -112,25 +107,27 @@ public class Inode
         int indexBlockLoc = blockNum - directSize;
         return SysLib.bytes2short(indirectIndexBlock, indexBlockLoc * 2);
     }
+
     //Exception in thread "Thread-5" java.lang.NoSuchMethodError: Inode.registerTargetBlock(IS)I
     public int registerTargetBlock(int offset, short indexBlockNum){
         if (offset < 0){
             SysLib.cerr("Invalid block number\n");
-            return -1;
+            return BLOCK_ERROR;
         }
         int block = offset / Disk.blockSize; 
         if (block < 11){
             if (direct[block] >= 0){
-                return -1;
+                return BLOCK_ERROR;
             }
             if (block > 0 && direct[block - 1] == -1){
-                return -2; 
+                return MISSING_ERROR; 
             }
             direct[block] = indexBlockNum;
-            return 0;
+            return OK;
         }
+        //return REGISTER_ERROR;
         if (indirect < 0){ //Not in either direct or indirect pointers
-            return -3; 
+            return REGISTER_ERROR; 
         }
         byte[] data = new byte[Disk.blockSize]; 
         SysLib.rawread(indirect, data);
@@ -138,11 +135,11 @@ public class Inode
         int targetBlock = block - directSize; 
         //Test targetBlock range?
         if (SysLib.bytes2short(data, targetBlock * 2) > 0){
-            return -1;
+            return BLOCK_ERROR;
         }
         SysLib.short2bytes(indexBlockNum, data, targetBlock * 2); 
         SysLib.rawwrite(indirect, data); 
-        return 0; 
+        return OK; 
     }
 
     public int findIndexBlock(){

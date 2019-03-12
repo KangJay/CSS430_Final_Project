@@ -69,7 +69,11 @@ public class Directory {
     }
 
     public boolean ifree(short iNumber){
-        if (fsize[iNumber] > 0) { //Check and clear up a inode spot. 
+        if (iNumber < 0){
+            SysLib.cerr("Directory.ifree iNumber value: " + iNumber + " is invalid!\n");
+            return false; 
+        }
+        if (fsize[iNumber] > 0) { //If the file exists at this index, clear it
             fsize[iNumber] = 0;
             return true;
         }

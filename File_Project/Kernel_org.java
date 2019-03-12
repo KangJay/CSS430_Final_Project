@@ -48,6 +48,7 @@ public class Kernel
    // System thread references
    private static Scheduler scheduler;
    private static Disk disk;
+   private static FileSystem fs; //Program 5 add-on
    private static Cache cache;
 
    // Synchronized Queues
@@ -76,7 +77,7 @@ public class Kernel
                scheduler.start( );
 
                //Instantiate FileSystem fs here.
-
+               FileSystem fs = new FileSystem(1000);
                // instantiate and start a disk
                disk = new Disk( 1000 );
                disk.start( );
@@ -164,7 +165,7 @@ public class Kernel
                   System.out.println( "threaOS: caused read errors" );
                   return ERROR;
                }
-               if ( (mcTcb = scheduler.getMyTcb()) != null){
+               if ( (myTcb = scheduler.getMyTcb()) != null){
                   FileTableEntry ftEnt = myTcb.getFtEnt(param); 
                   if (ftEnt != null){
                      return fs.read(ftEnt, (byte[]) args);
@@ -207,11 +208,8 @@ public class Kernel
                   String[] s = (String[]) args;
                   return myTcb.getFd(fs.open(s[0], s[1]));
                }
-               else
-               {
-                  return ERROR;
-               }
-               return OK;
+               return ERROR;
+
             case CLOSE:   // to be implemented in project
                if ( (myTcb = scheduler.getMyTcb()) != null )
                {
@@ -224,12 +222,13 @@ public class Kernel
                   {
                      return ERROR;
                   }
+                  return OK;
                }
-               return OK;
+               return ERROR;
             case SIZE:    // to be implemented in project
                if ( (myTcb = scheduler.getMyTcb()) != null )
                {
-                  FileTableEntry ftEnt = mcTcb.getFtEnt(param);
+                  FileTableEntry ftEnt = myTcb.getFtEnt(param);
                   if (ftEnt != null)
                   {
                       return fs.fsize(ftEnt);
@@ -240,16 +239,16 @@ public class Kernel
                if ( (myTcb = scheduler.getMyTcb()) != null )
                {
                   int[] seekArgs = (int[]) args;
-                  fileTableEntry ftEnt = myTcb.getFtEnt(param); 
+                  FileTableEntry ftEnt = myTcb.getFtEnt(param); 
                   if (ftEnt != null){
                      return fs.seek(ftEnt, seekArgs[0], seekArgs[1]);
                   }
                }
                return ERROR; 
             case FORMAT:  // to be implemented in project
-               return (fs.format(param) == true) ? OK : ERROR
+               return (fs.format(param) == true) ? OK : ERROR;
             case DELETE:  // to be implemented in project
-               return (fs.delete( (String) args) == true) ? OK : ERROR
+               return (fs.delete( (String) args) == true) ? OK : ERROR;
             }
             return ERROR;
         case INTERRUPT_DISK: // Disk interrupts

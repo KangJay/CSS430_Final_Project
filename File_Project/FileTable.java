@@ -9,7 +9,6 @@ public class FileTable {  // Each table entry should have
     private final static int USED = 1; 
     private final static int READ = 2; 
     private final static int WRITE = 3; 
-    private final static int DELETE = 4;
 
     public FileTable( Directory directory ) {   //Constructor
         table = new Vector();   //Instantiate a file (structure) table
