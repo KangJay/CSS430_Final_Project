@@ -19,7 +19,7 @@ public class Directory {
     public void bytes2directory(byte data[]){
         //Assumes data[] received directory information from disk
         if (data == null || data.length == 0) {
-            SysLib.cerr("Invalid data to directory formatting\n");
+             SysLib.cerr("Invalid data to directory formatting\n");
             return;
         }
         //Initializes the Directory instance with this data[]

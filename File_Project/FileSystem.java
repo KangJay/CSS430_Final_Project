@@ -74,7 +74,7 @@ class FileSystem{
     }
 
     public int read(FileTableEntry ftEnt, byte[] buffer){
-        if(ftEnt.mode.equals("w") && ftEnt.mode.equals("a") && ftEnt.mode.equals("w+")){
+        if(ftEnt.mode.equals("w") && ftEnt.mode.equals("a")){
             SysLib.cerr("Error: FileSystem.read(). Invalid mode: " + ftEnt.mode + " in call...\n");
             return -1;
         }
@@ -103,7 +103,7 @@ class FileSystem{
                 
                 /* Amount to read in each iteration. 
                 If readAmount is Disk.blockSize - offset, it's reading to the end of the block
-                If readAmount is Disk.blockSize, it's reading the entire block in one iteration
+                If readAmount is toRead, the amount ot read left to the EOF is less than a block
                 If readAmount is fsize(ftEnt), it's reading to the end of the file. inode.length will be the smallest value if it reads over
                 */
                 readAmount = Math.min( Math.min(Disk.blockSize - offset, toRead), fsize(ftEnt) - ftEnt.seekPtr);
@@ -124,9 +124,15 @@ class FileSystem{
     public final static int OK = 0;
     */ 
     public int write(FileTableEntry ftEnt, byte[] buffer){
+        //Set pointers accordingly if not before -- EXPERIMENTAL
         if (ftEnt.mode.equals("r")){
             SysLib.cerr("Error: FileSystem.write(). Read mode in a write call...\n");
             return -1; 
+        }
+        if (ftEnt.mode.equals("w")){ 
+            if (deallocAllBlocks((ftEnt))){
+                return -1; 
+            }
         }
         int amountWritten = 0;
         //w should clear the entire thing first, w+ can continue on from seekptr
@@ -154,10 +160,19 @@ class FileSystem{
                     blockNum = freeBlock; 
                 }
                 byte[] data = new byte[Disk.blockSize]; 
-                //SysLib.rawread(blockNum, data);
-                if (ftEnt.mode.equals("w+") || ftEnt.mode.equals("a")){ //Keep current blocks, else wipe
-                    SysLib.rawread(blockNum, data); 
-                }
+                SysLib.rawread(blockNum, data);
+                /*if (ftEnt.mode.equals("w+") || ftEnt.mode.equals("a")){ //Keep current blocks, else wipe
+                    SysLib.rawread(blockNum, data);
+                    if (ftEnt.mode.equals("a")){ //Put seekPtr to the end of the file. 
+                        ftEnt.seekPtr = fsize(ftEnt);
+                    } 
+                } else if (ftEnt.mode.equals("w")){ 
+                    //Clear the entire file first
+                    if (deallocAllBlocks((ftEnt))){
+                        return -1; 
+                    }
+
+                }*/
                 //Follow similar semantics to read call
                 currentByteIndex = ftEnt.seekPtr % Disk.blockSize; 
                 bytesLeft = Disk.blockSize - currentByteIndex;

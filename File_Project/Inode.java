@@ -170,7 +170,7 @@ public class Inode
         if (indirect >= 0){
             byte[] data = new byte[Disk.blockSize]; 
             SysLib.rawread(indirect, data);
-            indirect = -1; //Unregsiter
+            indirect = -1; //dereference 
             return data; 
         }
         return null;
