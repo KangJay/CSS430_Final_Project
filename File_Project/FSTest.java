@@ -153,6 +153,7 @@ class FSTest extends Thread{
             SysLib.cout( "fd = " + fd + " (wrong)\n" );
             return false;
         }
+        SysLib.close(fd);
         SysLib.cout("Successfully read from an existing file with 'r'\n\n");
         SysLib.cout("Attempting to read from a file that doesn't exist. \nFile descriptor should be some error value (Negative)\n");
         fd = SysLib.open("BunchofRandomnonsense", "r");
