@@ -1,14 +1,25 @@
-
+/**
+ * @author Ji Kang
+ * @author William Eng 
+ * Directory representing a collection of files in our system. Meant to act as the transition between user-readable interface to the system-readable inteface. 
+ * Responsible for mapping inode number to literal file names, allocating file space, deallocating file space, and populating the directory from disk. 
+ * A given file has a max character length of 30 which translates to (char = 2 bytes) 60 bytes total for the entire system. 
+ */
 public class Directory {
 
-    private static int maxChars = 30;
-    private int[] fsize;       //Each element stores a different file size
-    private char fnames[][];    //Each element stores a different file name
+    private static int maxChars = 30;   //Maximum name length of a file
+    private int[] fsize;        // Each element stores a different file size
+    private char fnames[][];    // Each element stores a different file name
 
-    public Directory(int maxInumber){   //Directory constructor
-        fsize = new int[maxInumber];   //MaxInumber = max number of files allowed in the system
+    /** Constructor making the Directory.  
+     *  @param maxInumber is the maximum allowed files for the given system. 
+     *  Iterates through and populates fsize which represents the length of the given file names. 
+     *  It'll also initialize the given root directory and set its size ot 0. 
+    */
+    public Directory(int maxInumber){   // Directory constructor
+        fsize = new int[maxInumber];    // MaxInumber = max number of files allowed in the system
         for (int i = 0; i < maxInumber; i++){
-            fsize[i] = 0; //All file sizes initialized to 0 bytes
+            fsize[i] = 0; // All file sizes initialized to 0 bytes
         }
         fnames = new char[maxInumber][maxChars];
         String root = "/";  // Entry inode 0 is root ("/")
@@ -16,6 +27,10 @@ public class Directory {
         root.getChars(0, fsize[0], fnames[0], 0); //fnames[0] includes "/"
     }
 
+    /** Assuming that 'data[]' is populated with valid information about the directory, it'll populate the given fsize array as well as the names. 
+     *  @param data[] holds information regarding fsize and fnames given in the format that the class is initiated. 
+     *  fsize.length amount of fsize values and fnames.length amount of fname values. 
+     */
     public void bytes2directory(byte data[]){
         //Assumes data[] received directory information from disk
         if (data == null || data.length == 0) {
@@ -34,6 +49,10 @@ public class Directory {
         }
     }
 
+    /** Converts the given directory format into a byte array jut large enough to hold fsize and fname values. 
+     *  Its logicic follows the same semantics as bytes2directory(byte data[]). 
+     * 
+     */
     public byte[] directory2bytes() {
         //Directory needs to hold the lengths of the files + names in bytes
         //length is in ints so = 4 * length bytes

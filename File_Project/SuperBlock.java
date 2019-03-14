@@ -51,7 +51,6 @@ public class SuperBlock
     	SysLib.int2bytes(totalBlocks, newSuperBlock, totalBlocksLoc);
     	SysLib.int2bytes(numInodes, newSuperblock, totalInodeLoc);
         */
-        System.out.println(numInodes);
         for (int i = 0; i < numInodes; i++){
             Inode inode = new Inode();
             inode.flag = 0; //UNUSED in the Inode class
