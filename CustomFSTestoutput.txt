@@ -1,0 +1,126 @@
+jaydenk@JKang18:~/Dropbox/CSS430/Final_Project/new/File_Project$ java Boot
+threadOS ver 1.0:
+Type ? for help
+threadOS: a new thread (thread=Thread[Thread-3,2,main] tid=0 pid=-1)
+-->l FSTest
+l FSTest
+Running Ji Kang and William Eng's custom testing for the ThreadOS FileSystem!
+threadOS: a new thread (thread=Thread[Thread-5,2,main] tid=1 pid=0)
+=====================FORMAT_TEST============================
+Running format tests on various inputs. May take a while... Sorry...
+
+Formatting with 16 files...
+Superblock synchronized
+Formatting with 16 files done successfully... :)
+Formatting with 28 files, not cleanly divisible by 16
+Superblock synchronized
+Formatting with 28 files done successfully... :)
+
+
+Format tests have all passed :)
+=========================================================
+
+Formatting block to 64 for remainder of testing...
+Superblock synchronized
+
+====================OPEN_TEST============================
+Running Open tests...
+
+Opening a file with 'w'. File descriptor should be equal to 3
+Successfully opened the file with 'w'
+
+Opening a file with 'w+', File descriptor should be equal to 4
+Successfully opened the file with 'w+'
+
+Opening a file with 'a', File descriptor should be equal to 5
+Successfully opened the file with 'a'
+
+Opening an existing file with 'r'. 
+File descriptor should be equal to 3 (Closed the first file earlier...)
+Successfully read from an existing file with 'r'
+
+Attempting to read from a file that doesn't exist. 
+File descriptor should be some error value (Negative)
+Couldn't read from a nonexisting file... Which is expected :)
+
+Open tests have all passed :)
+=========================================================
+
+======================WRITE_TEST========================
+Testing writing to some files...
+
+Writing 16 bytes to a file...
+16
+File written to successfully!
+
+Writing 256 bytes to a file...
+File written to successfully!
+
+Writing 314 bytes to a file... Happy pi day
+File written to successfully!
+
+Write tests have all passed :)
+=========================================================
+
+=======================CLOSE_TEST=====================
+Running close tests...
+
+Closing previously opened files.. FDs 3 and 4
+
+File with FD = 4 successfully closed. 
+
+File with FD = 5 successfully closed. 
+
+Close tests have all passed :)
+=========================================================
+
+======================READ_TEST=======================
+Testing reading from some files...
+
+Reading 16 bytes from a file
+File read from successfully and consistency check cleared!
+
+Reading 256 bytes from a file...
+File read from successfully and consistency check cleared!
+
+Reading 314 bytes from a file... Happy pi day
+File read from successfully and consistency check cleared!
+
+Read tests have all passed :)
+=========================================================
+
+======================SEEK_TEST=======================
+Testing seek boundaries
+Testing setting seek pointer to a negative...
+Passed! Seekpointer = 0
+Running consistency checks on reading from an offset of 25 from beginning of the file
+Consistency checks passed!
+
+Checking capping seekpointer passed file boundary... should be the size of the file
+
+Seeking file pointer to 9999999 from whence = 0. Definitely past file boundary.
+Seek pointer = EOF which is = 586
+Passed EOF clamping test!
+
+Seek tests have all passed :)
+=========================================================
+
+=====================FSIZE_TEST========================
+Previous test showed the file size of FD = 4 was 586. We'll test that :)
+Correct size!
+
+Fsize tests have all passed :)
+=========================================================
+
+=====================DELETE TEST=======================
+Testing delete
+Creating and deleting file 'ugh' :'(
+'Created file successfully... now closing + deleting
+Deleted successfully!
+
+Delete tests have all passed :)
+=========================================================
+
+
+Tests done running! :3
+-->
