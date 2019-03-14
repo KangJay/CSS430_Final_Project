@@ -92,7 +92,7 @@ class FileSystem{
                     return -1; 
                 }
                 if (blockNum == -1){
-			        System.out.println(readAmount);
+			        //System.out.println(readAmount);
                     break; //Return -1 instead?... Read error or call error? Catch error at end of while-loop?. NOTE: Leave as is unless testing says otherwise
                 }
                 //Read in current block
@@ -128,11 +128,6 @@ class FileSystem{
         if (ftEnt.mode.equals("r")){
             SysLib.cerr("Error: FileSystem.write(). Read mode in a write call...\n");
             return -1; 
-        }
-        if (ftEnt.mode.equals("w")){ 
-            if (deallocAllBlocks((ftEnt))){
-                return -1; 
-            }
         }
         int amountWritten = 0;
         //w should clear the entire thing first, w+ can continue on from seekptr
