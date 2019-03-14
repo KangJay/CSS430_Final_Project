@@ -201,6 +201,16 @@ class FSTest extends Thread{
             return false;
         }
         SysLib.cout("File written to successfully!\n\n");
+
+        SysLib.cout("Attempting to write to a file with max size\n");
+        
+        popBuffer(136704); //267 = max block size of a file. 267 * 512 = 136704 so we're writing past that
+        fd = SysLib.open("ExtremelyLargefile", "w");
+        if ((size = SysLib.write(fd, buffer)) != 136704){
+            SysLib.cout( "size = " + size + " (wrong)\n" );
+            return false;
+        }
+        SysLib.cout("Large file written to successfully!\n\n");
         return true;
     }
 
@@ -357,6 +367,7 @@ class FSTest extends Thread{
             return false; 
         }
         SysLib.cout("Deleted successfully!\n\n");
+
         return true; 
     }
 }
