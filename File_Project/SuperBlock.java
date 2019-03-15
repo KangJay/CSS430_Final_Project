@@ -1,5 +1,10 @@
-/**
-
+/** @author Ji Kang
+ *  @author William Eng
+ *  SuperBlock is the first block in Disk and represents the meta data of the file system overall.
+ *  It'll specify the total number of blocks in the disk, the total number of inodes, and a freelist pointer to the first
+ *  free block. It does this with 3 variables int totalBlocks, inodeBlocks, and freeList.
+ *  These variables are mapped to the first 12 bytes in the Superblock since each of them are 
+ *  represented by an integer value.
 */
 
 public class SuperBlock

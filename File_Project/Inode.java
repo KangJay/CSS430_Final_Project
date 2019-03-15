@@ -66,10 +66,10 @@ public class Inode
         indirect = SysLib.bytes2short(data, offset); //Done reading in this inode's data from disk. 
     }
 
-    /**
-	
+   /**  @param iNumber represents the inode number
+    *   Writes the given inode indicated by the iNumber to disk.     
     */
-    public void toDisk(short iNumber){
+    public synchronized void toDisk(short iNumber){
    		byte data[] = new byte[Disk.blockSize];
    		int blockNum = (iNumber / iNodePerBlock) + 1;
    		SysLib.rawread(blockNum, data);
@@ -84,14 +84,17 @@ public class Inode
         SysLib.short2bytes(flag, data, offset); 
         offset +=2; //Got all the instance variable's data set for this given inode. 
 
-        for (int i = 0; i < directSize; i++){
+        for (int i = 0; i < directSize; i++){ //Offset by 2 because of short = 2 bytes
         	SysLib.short2bytes(direct[i], data, offset);
         	offset += 2; 
         }
-        SysLib.short2bytes(indirect, data, offset);
-        SysLib.rawwrite(blockNum, data);
+        SysLib.short2bytes(indirect, data, offset); //Write once more for indirect
+        SysLib.rawwrite(blockNum, data);    //Write updated block back to memory
     }
 
+    /** @param numBytes is
+     * 
+     */
     //Exception in thread "main" java.lang.NoSuchMethodError: Inode.findTargetBlock(I)
     public int findTargetBlock(int numBytes) {
         int blockNum = numBytes / Disk.blockSize;
@@ -110,7 +113,7 @@ public class Inode
 
     //Exception in thread "Thread-5" java.lang.NoSuchMethodError: Inode.registerTargetBlock(IS)I
     public int registerTargetBlock(int offset, short indexBlockNum){
-        if (offset < 0){
+        if (offset < 0){ //
             SysLib.cerr("Invalid block number\n");
             return BLOCK_ERROR;
         }

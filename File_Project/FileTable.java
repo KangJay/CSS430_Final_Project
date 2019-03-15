@@ -1,3 +1,10 @@
+/** @author Ji Kang
+ *  @author William Eng
+ *  FileTable class maintains a vector of file table entries which map to files/inodes. 
+ *  It'll map inode to their respective modes they were opened in to ensure consistency among data.
+ *  By not allowing users to read on a write open or write on a read open and so forth. 
+ * 
+ */
 import java.util.Vector;
 public class FileTable {  // Each table entry should have
     
@@ -90,10 +97,10 @@ public class FileTable {  // Each table entry should have
             e.inode.count--; 
             switch(e.inode.flag){
                 case READ: {
-                    e.inode.flag = USED;
+                    e.inode.flag = UNUSED;
                 }
                 case WRITE: {
-                    e.inode.flag = USED; 
+                    e.inode.flag = UNUSED; 
                 } 
             }
             // Save the corresponding inode to the disk 

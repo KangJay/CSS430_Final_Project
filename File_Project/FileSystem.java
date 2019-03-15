@@ -117,12 +117,7 @@ class FileSystem{
         }
     }
 
-    /*
-    public final static int NOT_FREE = -1;
-    public final static int BAD_DIRECT_ACCESS = -2;
-    public final static int BAD_INDIRECT_ACCESS = -3;
-    public final static int OK = 0;
-    */ 
+
     public int write(FileTableEntry ftEnt, byte[] buffer){
         //Set pointers accordingly if not before -- EXPERIMENTAL
         if (ftEnt.mode.equals("r")){
@@ -156,18 +151,6 @@ class FileSystem{
                 }
                 byte[] data = new byte[Disk.blockSize]; 
                 SysLib.rawread(blockNum, data);
-                /*if (ftEnt.mode.equals("w+") || ftEnt.mode.equals("a")){ //Keep current blocks, else wipe
-                    SysLib.rawread(blockNum, data);
-                    if (ftEnt.mode.equals("a")){ //Put seekPtr to the end of the file. 
-                        ftEnt.seekPtr = fsize(ftEnt);
-                    } 
-                } else if (ftEnt.mode.equals("w")){ 
-                    //Clear the entire file first
-                    if (deallocAllBlocks((ftEnt))){
-                        return -1; 
-                    }
-
-                }*/
                 //Follow similar semantics to read call
                 currentByteIndex = ftEnt.seekPtr % Disk.blockSize; 
                 bytesLeft = Disk.blockSize - currentByteIndex;

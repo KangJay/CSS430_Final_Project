@@ -76,6 +76,11 @@ public class Directory {
         return directory;
     }
 
+    /** @param filename represents the name of the file we want to allocate in our directory. 
+     *  It'll iterate through the given fsize list to find a free slot by comparing the values ( 0 = free )
+     *  It'll then populate the fname array and return the i number representing the file's inode number.
+     * 
+     */
     public short ialloc(String filename) {
         for (short i = 0; i < fsize.length; i++){ //int --> short = lossy conversion
             if (fsize[i] == 0) { //Empty slot
@@ -99,6 +104,14 @@ public class Directory {
         return false; 
     }
 
+    /** Iterates through the file name/file size arrays to check which inode number
+     *  maps to the given file name. This method is responsible for essentially mapping
+     *  the human readable name to the name the file system uses to identify a file. 
+     *  @param filename represents the human-readable file name to search for. 
+     *  It iterates through the indexes, checks the file length with the length of the file name
+     *  to look for. If one matches, it'll construct a new string from the char[][] object and compare the names.
+     *  If they match, returns the for-loop index which represents the inode number. -1 otherwise.
+     */
     public short namei(String filename) { //Map name to i-number
         for (short i = 0; i < fsize.length; i++){
             if (fsize[i] == filename.length()){
