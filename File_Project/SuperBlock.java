@@ -69,9 +69,9 @@ public class SuperBlock
             SysLib.int2bytes(i + 1, data, 0); //Linking free list to next blocks
             SysLib.rawwrite(i, data);
         }
-       /* byte[] endList = new byte[Disk.blockSize]; //Last block in link shouldn't point to anything initially. 
+        byte[] endList = new byte[Disk.blockSize]; //Last block in link shouldn't point to anything initially. 
         SysLib.int2bytes(-1, endList, 0);
-        SysLib.rawwrite(totalBlocks - 1, data);*/
+        SysLib.rawwrite(totalBlocks - 1, endList);
         sync(); 
     }
 
@@ -107,7 +107,7 @@ public class SuperBlock
         return -1; 
     }
 
-    //Enqeue a given block to the end of the free list
+    //Enqueue a given block to the front of the free list
     public boolean returnBlock(int blockNum) {
         if (blockNum >= 0){
             byte[] data = new byte[Disk.blockSize];
